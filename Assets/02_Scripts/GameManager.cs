@@ -19,13 +19,19 @@ public class GameManager : MonoBehaviour
             //Debug.LogError("게임메니저가 왜 2개냐");
             Destroy(this.gameObject);
         }
+
+        LoadData();
     }
 
     [Header("Values")]
     public float    speed;
-    public int      playerNum;
+    public int      playerNum; // 쥐 종류
     public int      bells;
     public int      score;
+    public int[]    highScores; // 스테이지 별 최고 점수
+    public Vector3  startPos;
+    public int      heartCount; // 플레이 가능 횟수
+    public bool     isRight; // 오른손잡이 인가?
 
     [Header("Check")]
     [SerializeField]
@@ -66,10 +72,7 @@ public class GameManager : MonoBehaviour
                 player = null;
                 return;
 
-            case GameState.Init: // ObjectPool 만들때 필요
-                return;
-
-            case GameState.Start:
+            case GameState.Start: // ObjectPool 만들때 필요
                 GameStart();
                 return;
 
@@ -91,12 +94,50 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void LoadData()
+    {
+        if (PlayerPrefs.HasKey("PlayerNum")) playerNum = PlayerPrefs.GetInt("PlayerNum");
+        else playerNum = 0;
+
+        if (PlayerPrefs.HasKey("HeartCount")) heartCount = PlayerPrefs.GetInt("HeartCount");
+        else heartCount = 5;
+
+        // 하이스코어 스테이지 별로 받아옴
+
+        if (PlayerPrefs.HasKey("IsRight"))
+        {
+            switch (PlayerPrefs.GetInt("IsRight"))
+            {
+                case 0: isRight = false; break;
+                case 1: isRight = true; break;
+                default: isRight = true; break;
+            }
+        }
+        else isRight = true;
+
+
+    }
+
+    public void GameSave()
+    {
+        PlayerPrefs.SetInt("PlayerNum", playerNum);
+
+        PlayerPrefs.SetInt("HeartCount", heartCount);
+
+        // 하이스코어 스테이지 별로 저장함
+
+        if (isRight) PlayerPrefs.SetInt("IsRight", 1);
+        else PlayerPrefs.SetInt("IsRight", 0);
+
+    }
+
     private void GameStart()
     {
         if (SceneManager.GetActiveScene().name == "Game")
         {
-            player = Instantiate(players[playerNum]).GetComponent<PlayerMove>();
-            StateUpdate(GameState.Running);
+            bell_UI = GameObject.Find("Bells");
+            player = Instantiate(players[playerNum], startPos, Quaternion.identity).GetComponent<PlayerMove>();
+            GameManager.instans.StateUpdate(GameState.Running);
         }
 
         else

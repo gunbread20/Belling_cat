@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     [Header("ETC")]
     [SerializeField]
     GameObject menuCount;
+    [SerializeField]
+    GameObject Progress_Unit;
 
     private PlayerMove player;
 
@@ -49,6 +51,10 @@ public class UIManager : MonoBehaviour
             case "Slide":
                 if (GameManager.instans.StateGet() != GameState.Running) return;
                 Debug.Log(b.name);
+                return;
+
+            case "Restart":
+                SceneManager.LoadScene("Game");
                 return;
 
             default:

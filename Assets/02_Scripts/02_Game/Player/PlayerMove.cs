@@ -14,35 +14,41 @@ public class PlayerMove : MonoBehaviour
     Transform originTr, nowTr;
     Vector3 targetPos;
     Rigidbody2D myRg;
+    Animator myAtor;
 
     [Header("Check")]
     [SerializeField]
     int nowCount;
     [SerializeField]
     GameState gState;
+    [SerializeField]
+    float atorSpeed;
 
     void Start()
     {
         originTr = transform;
-        transform.position = new Vector2(0, -4);
+        transform.position = GameManager.instans.startPos;
         nowCount    = 0;
         nowTr = originTr;
         myRg = GetComponent<Rigidbody2D>();
+        myAtor = GetComponent<Animator>();
         myRg.gravityScale = weight;
     }
 
     private void Update()
     {
         gState = GameManager.instans.StateGet();
-
+        
         switch (gState)
         {
             case GameState.Standby:
                 myRg.constraints = RigidbodyConstraints2D.FreezePositionY;
+                myAtor.speed = 0.0f;
                 break;
 
             case GameState.Running:
                 myRg.constraints = 0;
+                myAtor.speed = 1f;
                 break;
 
             case GameState.Over:
