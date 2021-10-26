@@ -135,6 +135,7 @@ public class GameManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "Game")
         {
+            player = null;
             bell_UI = GameObject.Find("Bells");
             player = Instantiate(players[playerNum], startPos, Quaternion.identity).GetComponent<PlayerMove>();
             GameManager.instans.StateUpdate(GameState.Running);

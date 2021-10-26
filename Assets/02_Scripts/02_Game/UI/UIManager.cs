@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
 
             case "Restart":
                 SceneManager.LoadScene("Game");
+                GameManager.instans.StateUpdate(GameState.Start);
                 return;
 
             default:
